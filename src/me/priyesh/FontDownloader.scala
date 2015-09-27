@@ -15,7 +15,7 @@ object FontDownloader {
 
   private def pathBuilder(name: String, style: FontStyle): String = s"./download/$name/${style.localName}"
   private def urlBuilder(name: String, style: FontStyle): String =
-    s"https://raw.githubusercontent.com/ItsPriyesh/FontsterFontsRepo/master/${name}FontPack/${style.remoteName}}"
+    s"https://raw.githubusercontent.com/ItsPriyesh/FontsterFontsRepo/master/${name}FontPack/${style.remoteName}"
 
   private def getUrls(fontName: String): List[String] = FontStyle.AllStyles.map(style => urlBuilder(fontName, style))
   private def getPaths(fontName: String): List[String] = FontStyle.AllStyles.map(style => pathBuilder(fontName, style))
@@ -25,6 +25,7 @@ object FontDownloader {
     .flatMap(urlAndPath => downloadFile(urlAndPath._1, urlAndPath._2))
 
   private def downloadFile(url: String, path: String): Observable[File] = Observable(subscriber => {
+    println(s"Downloading $url")
     val request = new Builder().url(url).build()
     val file = new File(path)
     if (!file.exists()) {
