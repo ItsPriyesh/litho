@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="io.reactivex:rxscala_2.11:0.25.0" type="repository">
+    <properties maven-id="io.reactivex:rxscala_2.11:0.25.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactivex/rxscala_2.11/0.25.0/rxscala_2.11-0.25.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.11.6/scala-library-2.11.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactivex/rxjava/1.0.11/rxjava-1.0.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
