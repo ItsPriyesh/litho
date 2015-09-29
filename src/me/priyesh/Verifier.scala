@@ -7,7 +7,7 @@ object Verifier {
 
   import FontStyle._
 
-  def verifyFont(style: FontStyle, font: Font): Option[Unit] = {
+  def fontIsValid(font: Font, style: FontStyle): Boolean = {
     val macStyle = font.getTable[FontHeaderTable](Tag.head).macStyleAsInt()
     val requiredFlags: Set[Int] = style match {
       case Black | Bold | CondensedBold => Set(0)
@@ -17,7 +17,6 @@ object Verifier {
     }
     val allNeededFlags = requiredFlags.forall(flag => (macStyle & (1 << flag)) != 0)
     val noExtraFlags = Set(0, 1).diff(requiredFlags).forall(flag => (macStyle & (1 << flag)) == 0)
-    if (allNeededFlags && noExtraFlags) Some(())
-    else None
+    allNeededFlags && noExtraFlags
   }
 }
