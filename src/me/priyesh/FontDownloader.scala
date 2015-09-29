@@ -22,7 +22,7 @@ object FontDownloader {
 
   private def downloadFiles(urlsAndPaths: List[(String, String)]): Observable[File] = Observable
     .from(urlsAndPaths)
-    .flatMap(urlAndPath => downloadFile(urlAndPath._1, urlAndPath._2))
+    .flatMap(downloadFile _ tupled)
 
   private def downloadFile(url: String, path: String): Observable[File] = Observable(subscriber => {
     println(s"Downloading $url")
