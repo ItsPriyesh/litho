@@ -1,7 +1,8 @@
 package me.priyesh
 
-sealed case class FontStyle(private val local: String, private val remoteMaybe: Option[String] = None) {
+sealed case class FontStyle private(private val local: String, private val remoteMaybe: Option[String] = None) {
   def format(s: String): String = s"Roboto$s.ttf"
+
   val localName = format(local)
   val remoteName = remoteMaybe.getOrElse(localName)
 }
