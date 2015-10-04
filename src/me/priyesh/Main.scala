@@ -35,8 +35,7 @@ object Main {
   }
 
   def buildPackage(folderName: String): Unit = {
-    val files = filesFromFolder(folderName)
-    Packager.buildPackageFromBasics(files)
+    Packager.buildPackageFromBasics(folderName)
   }
 
   def verify(folderName: String): Unit = {
