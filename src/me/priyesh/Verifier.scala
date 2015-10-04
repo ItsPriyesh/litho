@@ -1,14 +1,16 @@
 package me.priyesh
 
+import java.io.File
+
+import com.google.typography.font.sfntly.Tag
 import com.google.typography.font.sfntly.table.core.FontHeaderTable
-import com.google.typography.font.sfntly.{Font, Tag}
 
 object Verifier {
 
   import FontStyle._
 
-  def fontIsValid(font: Font, style: FontStyle): Boolean = {
-    val macStyle = font.getTable[FontHeaderTable](Tag.head).macStyleAsInt()
+  def fontIsValid(fontFile: File, style: FontStyle): Boolean = {
+    val macStyle = FontLoader.fontFromFile(fontFile).getTable[FontHeaderTable](Tag.head).macStyleAsInt()
     val requiredFlags = getRequiredFlags(style)
     val allNeededFlags = requiredFlags.forall(flag => (macStyle & (1 << flag)) != 0)
     val noExtraFlags = Set(0, 1).diff(requiredFlags).forall(flag => (macStyle & (1 << flag)) == 0)

@@ -18,6 +18,12 @@ object FontLoader {
 
   def fontFromFile(file: File): Font = fontFactory.loadFonts(new FileInputStream(file))(0)
 
+  def filesFromFolder(folderName: String): List[File] = {
+    val folder = new File(folderName)
+    if (folder.exists && folder.isDirectory) folder.listFiles.filter(_.isFile).toList
+    else List[File]()
+  }
+
   private def pathBuilder(name: String, style: FontStyle): String = s"./download/$name/${style.localName}"
 
   private def urlBuilder(name: String, style: FontStyle): String =

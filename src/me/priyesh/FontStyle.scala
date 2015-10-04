@@ -29,4 +29,13 @@ object FontStyle {
   val AllStyles = List(Bold, BoldItalic, Italic, Light, LightItalic, Regular, Thin, ThinItalic, CondensedBold,
     CondensedBoldItalic, CondensedItalic, CondensedRegular, Black, BlackItalic, Medium, MediumItalic, CondensedLight,
     CondensedLightItalic)
+
+  val BasicStyles = List(Regular, Italic, Bold, BoldItalic)
+
+  val DerivativeMap = Map(
+    Regular -> List(Thin, Light, CondensedRegular),
+    Italic -> List(ThinItalic, LightItalic, CondensedItalic),
+    Bold -> List(CondensedBold),
+    BoldItalic -> List(CondensedBoldItalic)
+  )
 }
