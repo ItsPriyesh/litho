@@ -24,10 +24,10 @@ object FontLoader {
     else List[File]()
   }
 
-  private def pathBuilder(name: String, style: FontStyle): String = s"./download/$name/${style.localName}"
+  private def pathBuilder(name: String, style: FontStyle): String = s"./download/$name/${style.name}"
 
   private def urlBuilder(name: String, style: FontStyle): String =
-    s"https://raw.githubusercontent.com/ItsPriyesh/FontsterFontsRepo/master/${name}FontPack/${style.remoteName}"
+    s"https://raw.githubusercontent.com/ItsPriyesh/FontsterFontsRepo/master/${name}FontPack/${style.name}"
 
   private def getUrls(fontName: String): List[String] = FontStyle.AllStyles.map(style => urlBuilder(fontName, style))
 

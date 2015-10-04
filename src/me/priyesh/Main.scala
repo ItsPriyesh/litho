@@ -30,7 +30,7 @@ object Main {
 
     if (invalidFonts.nonEmpty) {
       println(s"${invalidFonts.size} styles are invalid:")
-      invalidFonts.foreach(p => println(s"${p._2.localName}"))
+      invalidFonts.foreach(p => println(s"${p._2.name}"))
     } else {
       println("All fonts were valid")
     }
