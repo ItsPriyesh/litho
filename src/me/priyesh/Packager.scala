@@ -17,6 +17,7 @@
 package me.priyesh
 
 import java.io.File
+import java.nio.file._
 
 object Packager {
 
@@ -42,12 +43,30 @@ object Packager {
       if (basicFiles.isEmpty) {
         println(s"$BasicsMissing\n$EnsureBasicsExist")
       } else {
-
+        val stylesAndFiles = FontStyle.BasicStyles zip basicFiles
+        generateDerivatives(stylesAndFiles)
       }
+      println("Package was created")
     }
   }
 
-  def findBasicFiles(files: List[File]): List[File] = {
+  private def generateDerivatives(basics: List[(FontStyle, File)]): Unit = {
+    import FontStyle._
+
+    basics.foreach(styleAndFile => {
+      val basicStyle = styleAndFile._1
+      val basicFile = styleAndFile._2
+      val derivatives = DerivativeMap.getOrElse(basicStyle, List())
+      derivatives.foreach(style => copyFile(basicFile, new File(s"./${style.name}")))
+    })
+  }
+
+  private def copyFile(source: File, dest: File): Unit = {
+    def fileToPath(file: File): Path = Paths.get(file.toURI)
+    Files.copy(fileToPath(source), fileToPath(dest), StandardCopyOption.REPLACE_EXISTING)
+  }
+
+  private def findBasicFiles(files: List[File]): List[File] = {
     val regular = findFile(files, "regular")
     val italic = findFile(files, "italic", exclude = Some("bold"))
     val bold = findFile(files, "bold", exclude = Some("italic"))
