@@ -36,7 +36,9 @@ object FontLoader {
 
   def filesFromFolder(folderName: String): List[File] = {
     val folder = new File(folderName)
-    if (folder.exists && folder.isDirectory) folder.listFiles.filter(_.isFile).toList
+    def isVisibleFile(file: File): Boolean = file.isFile && !file.isHidden
+
+    if (folder.exists && folder.isDirectory) folder.listFiles.filter(isVisibleFile).toList
     else List[File]()
   }
 

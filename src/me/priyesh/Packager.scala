@@ -28,20 +28,22 @@ object Packager {
   private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
     files.find(file => {
       val name = file.getName.toUpperCase
-      if (exclude.isEmpty) name.contains(search)
-      else name.contains(search) && !name.contains(exclude)
+      if (exclude.isEmpty) name.contains(search.toUpperCase)
+      else name.contains(search.toUpperCase) && !name.contains(exclude.get.toUpperCase)
     })
   }
 
   def buildPackageFromBasics(files: List[File]): Unit = {
     import ErrorStrings._
-
+    
     if (containsInvalidFiles(files)) println(InvalidFiles)
     else if (invalidFileCount(files)) println(s"$InvalidFileCount\n$EnsureBasicsExist")
     else {
       val basicFiles = findBasicFiles(files)
+
       if (basicFiles.isEmpty) {
         println(s"$BasicsMissing\n$EnsureBasicsExist")
+        return
       } else {
         val stylesAndFiles = FontStyle.BasicStyles zip basicFiles
         generateDerivatives(stylesAndFiles)

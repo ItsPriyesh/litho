@@ -34,10 +34,10 @@ object Verifier {
   }
 
   private def getRequiredFlags(style: FontStyle): Set[Int] = style match {
-    case Black | Bold | CondensedBold => Set(0)
-    case Italic | CondensedItalic | CondensedLightItalic | LightItalic | MediumItalic | ThinItalic => Set(1)
-    case CondensedBoldItalic | BoldItalic | BlackItalic => Set(0, 1)
-    case CondensedRegular | Regular | Thin | Medium | Light | CondensedLight => Set()
+    case Bold | CondensedBold => Set(0)
+    case Italic | CondensedItalic | LightItalic | ThinItalic => Set(1)
+    case CondensedBoldItalic | BoldItalic => Set(0, 1)
+    case CondensedRegular | Regular | Thin | Light => Set()
   }
 
   private def getCorrectMacStyle(style: FontStyle): Int =
