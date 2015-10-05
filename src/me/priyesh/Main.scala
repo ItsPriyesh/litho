@@ -16,22 +16,27 @@
 
 package me.priyesh
 
-import me.priyesh.FontLoader._
-import me.priyesh.Verifier._
+import me.priyesh.core.{Packager, FontStyle, Verifier, FontLoader}
+import FontLoader._
+import Verifier._
 
 object Main {
 
   def main(args: Array[String]): Unit = {
     if (args.isEmpty) showSplash()
-    args(0) match {
-      case "verify" => verify(args(1))
-      case "package" => buildPackage(args(1))
-      case default => println(s"$default is not a valid argument")
+    else {
+      args(0) match {
+        case "verify" => verify(args(1))
+        case "package" => buildPackage(args(1))
+        case default => println(s"$default is not a valid argument")
+      }
     }
   }
 
   def showSplash(): Unit = {
-
+    import Config._
+    println(SplashText)
+    print(s"Version $Version || By $Author")
   }
 
   def buildPackage(folderName: String): Unit = {

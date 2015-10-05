@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.core
 
-import java.io.{FileInputStream, File}
+import java.io.{File, FileInputStream}
 
-import com.google.typography.font.sfntly.{FontFactory, Font}
+import com.google.typography.font.sfntly.{Font, FontFactory}
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request.Builder
 import okio.Okio

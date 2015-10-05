@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.core
 
 sealed case class FontStyle private(private val s: String) {
   val name = s"Roboto$s.ttf"

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.core
 
 import java.io.File
 import java.nio.file._
+
+import me.priyesh.Strings
 
 object Packager {
 
@@ -36,14 +38,14 @@ object Packager {
   }
 
   def buildPackageFromBasics(folderName: String): Unit = {
-    import ErrorStrings._
+    import Strings._
     import Verifier._
 
     val files = FontLoader.filesFromFolder(folderName)
 
-    if (!folderExists(folderName)) println(CantFindFolder)
-    else if (containsInvalidFiles(files)) println(InvalidFiles)
-    else if (invalidFileCount(files)) println(s"$InvalidFileCount\n$EnsureBasicsExist")
+    if (!folderExists(folderName)) println(ErrorCantFindFolder)
+    else if (containsInvalidFiles(files)) println(ErrorInvalidFiles)
+    else if (invalidFileCount(files)) println(s"$ErrorInvalidFileCount\n$ErrorEnsureBasicsExist")
     else {
       val basicFiles = findBasicFiles(files)
       if (basicFiles.nonEmpty) {
@@ -52,10 +54,10 @@ object Packager {
           generateDerivatives(folderName, filesAndStyles)
           println("Package was created")
         } else {
-          println(InvalidMacStyles)
+          println(ErrorInvalidMacStyles)
         }
       } else {
-        println(s"$BasicsMissing\n$EnsureBasicsExist")
+        println(s"$ErrorBasicsMissing\n$ErrorEnsureBasicsExist")
       }
     }
   }

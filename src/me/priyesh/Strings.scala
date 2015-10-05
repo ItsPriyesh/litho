@@ -16,25 +16,11 @@
 
 package me.priyesh
 
-import java.io.File
-
-import me.priyesh.core.FontStyle
-
-object Test {
-
-  def main(args: Array[String]): Unit = {
-    displayResult(testPackager)
-  }
-  
-  def displayResult(result: Boolean): Unit = println(s"Packager test ${if (result) "passed" else "failed"}")
-
-  def testPackager: Boolean = {
-    val folderName = "Aleo"
-    val args = Array("package", folderName)
-
-    Main.main(args)
-
-    def fileExists(style: FontStyle): Boolean = new File(s"./${folderName}Generated/${style.name}").exists()
-    FontStyle.AllStyles.forall(fileExists)
-  }
+object Strings {
+  val ErrorInvalidFiles = "Folder contains invalid fonts. Only .ttf files are allowed."
+  val ErrorInvalidFileCount = "Folder contains invalid number of fonts."
+  val ErrorBasicsMissing = "Litho was unable to locate all basic files."
+  val ErrorEnsureBasicsExist = "Ensure that you include the following styles: Regular, Italic, Bold, BoldItalic."
+  val ErrorInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned."
+  val ErrorCantFindFolder = "Litho could not find the specified folder."
 }
