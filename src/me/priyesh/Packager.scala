@@ -35,6 +35,7 @@ object Packager {
 
   def buildPackageFromBasics(folderName: String): Unit = {
     import ErrorStrings._
+    import Verifier._
 
     val files = FontLoader.filesFromFolder(folderName)
 
@@ -42,18 +43,21 @@ object Packager {
     else if (invalidFileCount(files)) println(s"$InvalidFileCount\n$EnsureBasicsExist")
     else {
       val basicFiles = findBasicFiles(files)
-
       if (basicFiles.nonEmpty) {
-        val stylesAndFiles = FontStyle.BasicStyles zip basicFiles
-        generateDerivatives(folderName, stylesAndFiles)
-        println("Package was created")
+        val filesAndStyles = basicFiles zip FontStyle.BasicStyles
+        if (filesAndStyles.forall(fontIsValid _ tupled)) {
+          generateDerivatives(folderName, filesAndStyles)
+          println("Package was created")
+        } else {
+          println(InvalidMacStyles)
+        }
       } else {
         println(s"$BasicsMissing\n$EnsureBasicsExist")
       }
     }
   }
 
-  private def generateDerivatives(folderName: String, basics: List[(FontStyle, File)]): Unit = {
+  private def generateDerivatives(folderName: String, basics: List[(File, FontStyle)]): Unit = {
     import FontStyle._
 
     new File(s"./${folderName}Generated/").mkdirs()
@@ -61,8 +65,8 @@ object Packager {
     def buildDestFile(style: FontStyle): File = new File(s"./${folderName}Generated/${style.name}")
 
     basics.foreach(styleAndFile => {
-      val basicStyle = styleAndFile._1
-      val basicFile = styleAndFile._2
+      val basicFile = styleAndFile._1
+      val basicStyle = styleAndFile._2
       val derivatives = DerivativeMap.getOrElse(basicStyle, List())
       derivatives.foreach(style => copyFile(basicFile, buildDestFile(style)))
     })
