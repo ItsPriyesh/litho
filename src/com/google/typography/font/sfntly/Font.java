@@ -612,7 +612,7 @@ public class Font {
     private Map<Header, WritableFontData> dataBlocks;
     private byte[] digest;
 
-    private Builder(FontFactory factory) {
+    public Builder(FontFactory factory) {
       this.factory = factory;
       this.tableBuilders = new HashMap<Integer, Table.Builder<? extends Table>>();
     }

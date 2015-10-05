@@ -21,7 +21,7 @@ import java.io.File
 import com.google.typography.font.sfntly.data.WritableFontData
 import com.google.typography.font.sfntly.sfntly.testutils.TestFontUtils
 import com.google.typography.font.sfntly.table.core.FontHeaderTable
-import com.google.typography.font.sfntly.{Font, Tag}
+import com.google.typography.font.sfntly.{FontFactory, Font, Tag}
 
 object Verifier {
 
@@ -44,7 +44,7 @@ object Verifier {
 
     val fixedHeaderTable = headerTableBuilder.build()
     
-    val fixedFontBuilder = new Font.Builder()
+    val fixedFontBuilder = new Font.Builder(FontFactory.getInstance())
     fixedFontBuilder.setDigest(originalFont.digest())
     fixedFontBuilder.newTableBuilder(Tag.head, fixedHeaderTable.readFontData())
 
@@ -59,6 +59,7 @@ object Verifier {
       case Italic | CondensedItalic | LightItalic | ThinItalic => Set(1)
       case CondensedBoldItalic | BoldItalic => Set(0, 1)
       case CondensedRegular | Regular | Thin | Light => Set()
+      case default => Set()
     }
   }
 
