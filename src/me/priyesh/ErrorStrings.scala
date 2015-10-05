@@ -22,4 +22,5 @@ object ErrorStrings {
   val BasicsMissing = "Litho was unable to locate all basic files."
   val EnsureBasicsExist = "Ensure that you include the following styles: Regular, Italic, Bold, BoldItalic."
   val InvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned"
+  val CantFindFolder = "Litho could not find the specified folder"
 }

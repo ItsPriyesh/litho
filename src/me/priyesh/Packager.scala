@@ -25,6 +25,8 @@ object Packager {
 
   private def invalidFileCount(files: List[File]): Boolean = files.size != FontStyle.BasicStyles.size
 
+  private def folderExists(name: String): Boolean = new File(s"./${name}Generated/").exists()
+
   private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
     files.find(file => {
       val name = file.getName.toUpperCase
@@ -39,7 +41,8 @@ object Packager {
 
     val files = FontLoader.filesFromFolder(folderName)
 
-    if (containsInvalidFiles(files)) println(InvalidFiles)
+    if (!folderExists(folderName)) println(CantFindFolder)
+    else if (containsInvalidFiles(files)) println(InvalidFiles)
     else if (invalidFileCount(files)) println(s"$InvalidFileCount\n$EnsureBasicsExist")
     else {
       val basicFiles = findBasicFiles(files)
