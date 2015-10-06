@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.priyesh.core
+package me.priyesh.litho.core
 
 import java.io.{File, FileInputStream}
 

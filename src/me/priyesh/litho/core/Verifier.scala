@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package me.priyesh.core
+package me.priyesh.litho.core
 
 import java.io.File
 
+import com.google.typography.font.sfntly.Tag
 import com.google.typography.font.sfntly.data.WritableFontData
 import com.google.typography.font.sfntly.sfntly.testutils.TestFontUtils
 import com.google.typography.font.sfntly.table.core.FontHeaderTable
-import com.google.typography.font.sfntly.{FontFactory, Font, Tag}
 
 object Verifier {
 
@@ -44,12 +44,11 @@ object Verifier {
 
     val fixedHeaderTable = headerTableBuilder.build()
     
-    val fixedFontBuilder = new Font.Builder(FontFactory.getInstance())
-    fixedFontBuilder.setDigest(originalFont.digest())
+    val fixedFontBuilder = TestFontUtils.builderForFontFile(sourceFile)
     fixedFontBuilder.newTableBuilder(Tag.head, fixedHeaderTable.readFontData())
 
     val fixedFont = fixedFontBuilder.build()
-    TestFontUtils.serializeFont(fixedFont,  destFile)
+    TestFontUtils.serializeFont(fixedFont, destFile)
   }
 
   private def getRequiredFlags(style: FontStyle): Set[Int] = {

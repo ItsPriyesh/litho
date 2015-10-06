@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package me.priyesh.core
+package me.priyesh.litho.core
 
 import java.io.File
 import java.nio.file._
 
-import me.priyesh.Strings
+import me.priyesh.litho.Strings
 
 object Packager {
 
@@ -27,7 +27,7 @@ object Packager {
 
   private def invalidFileCount(files: List[File]): Boolean = files.size != FontStyle.BasicStyles.size
 
-  private def folderExists(name: String): Boolean = new File(s"./${name}Generated/").exists()
+  private def folderExists(name: String): Boolean = new File(s"./$name").exists()
 
   private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
     files.find(file => {
@@ -41,23 +41,27 @@ object Packager {
     import Strings._
     import Verifier._
 
-    val files = FontLoader.filesFromFolder(folderName)
-
-    if (!folderExists(folderName)) println(ErrorCantFindFolder)
-    else if (containsInvalidFiles(files)) println(ErrorInvalidFiles)
-    else if (invalidFileCount(files)) println(s"$ErrorInvalidFileCount\n$ErrorEnsureBasicsExist")
-    else {
-      val basicFiles = findBasicFiles(files)
-      if (basicFiles.nonEmpty) {
-        val filesAndStyles = basicFiles zip FontStyle.BasicStyles
-        if (filesAndStyles.forall(fontIsValid _ tupled)) {
-          generateDerivatives(folderName, filesAndStyles)
-          println("Package was created")
-        } else {
-          println(ErrorInvalidMacStyles)
-        }
+    if (!folderExists(folderName)) {
+      println(ErrorCantFindFolder)
+    } else {
+      val files = FontLoader.filesFromFolder(folderName)
+      if (containsInvalidFiles(files)) {
+        println(ErrorInvalidFiles)
+      } else if (invalidFileCount(files)) {
+        println(s"$ErrorInvalidFileCount\n$ErrorEnsureBasicsExist")
       } else {
-        println(s"$ErrorBasicsMissing\n$ErrorEnsureBasicsExist")
+        val basicFiles = findBasicFiles(files)
+        if (basicFiles.nonEmpty) {
+          val filesAndStyles = basicFiles zip FontStyle.BasicStyles
+          if (filesAndStyles.forall(fontIsValid _ tupled)) {
+            generateDerivatives(folderName, filesAndStyles)
+            println(PackageWasCreated)
+          } else {
+            println(ErrorInvalidMacStyles)
+          }
+        } else {
+          println(s"$ErrorBasicsMissing\n$ErrorEnsureBasicsExist")
+        }
       }
     }
   }

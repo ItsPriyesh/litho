@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.test
 
-object Config {
+object TestRunner {
 
-  val SplashText = "    __    _ __  __        \n   / /   (_) /_/ /_  ____ \n  / /   " +
-    "/ / __/ __ \\/ __ \\\n / /___/ / /_/ / / / /_/ /\n/_____/_/\\__/_/ /_/\\____/ \n"
+  def main(args: Array[String]): Unit = {
+    import TestCases._
 
-  val Version = 1.0
-  val Author = "Priyesh Patel"
-  val Debug = false
-  
+    run(testPackagingFromBasicStyles())
+  }
+
+  def run(test: TestFunction): Unit = println(s"${test.name} ${if (test()) "passed" else "failed"}")
+
+  case class TestFunction(name: String,
+                          private val before: () => Unit = () => (),
+                          private val test: () => Boolean,
+                          private val after: () => Unit = () => ()) {
+    def apply() = {
+      before()
+      val result = test()
+      after()
+      result
+    }
+  }
+
 }

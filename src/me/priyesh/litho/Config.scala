@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.litho
 
-object Strings {
-  val ErrorInvalidFiles = "Folder contains invalid fonts. Only .ttf files are allowed."
-  val ErrorInvalidFileCount = "Folder contains invalid number of fonts."
-  val ErrorBasicsMissing = "Litho was unable to locate all basic files."
-  val ErrorEnsureBasicsExist = "Ensure that you include the following styles: Regular, Italic, Bold, BoldItalic."
-  val ErrorInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned."
-  val ErrorCantFindFolder = "Litho could not find the specified folder."
+object Config {
+
+  val SplashText = "    __    _ __  __        \n   / /   (_) /_/ /_  ____ \n  / /   " +
+    "/ / __/ __ \\/ __ \\\n / /___/ / /_/ / / / /_/ /\n/_____/_/\\__/_/ /_/\\____/ \n"
+
+  val Version = 1.0
+  val Author = "Priyesh Patel"
+  val Debug = false
+  
 }

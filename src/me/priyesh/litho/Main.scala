@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package me.priyesh
+package me.priyesh.litho
 
-import me.priyesh.core.{Packager, FontStyle, Verifier, FontLoader}
-import FontLoader._
-import Verifier._
+import me.priyesh.litho.core.FontLoader._
+import me.priyesh.litho.core.Verifier._
+import me.priyesh.litho.core.{FontStyle, Packager}
 
 object Main {
 
