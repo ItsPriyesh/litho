@@ -51,4 +51,20 @@ object FontStyle {
     Bold -> List(Bold, CondensedBold),
     BoldItalic -> List(BoldItalic, CondensedBoldItalic)
   )
+
+  val FileNameToFontStyleMap = Map(
+    "Roboto-Regular.ttf" -> Regular,
+    "Roboto-Italic.ttf" -> Italic,
+    "Roboto-Bold.ttf" -> Bold,
+    "Roboto-BoldItalic.ttf" -> BoldItalic,
+    "Roboto-Light.ttf" -> Light,
+    "Roboto-LightItalic.ttf" -> LightItalic,
+    "Roboto-Thin.ttf" -> Thin,
+    "Roboto-ThinItalic.ttf" -> ThinItalic,
+    "RobotoCondensed-Regular.ttf" -> CondensedRegular,
+    "RobotoCondensed-Italic.ttf" -> CondensedItalic,
+    "RobotoCondensed-Bold.ttf" -> CondensedBold,
+    "RobotoCondensed-BoldItalic.ttf" -> CondensedBoldItalic
+  )
+
 }

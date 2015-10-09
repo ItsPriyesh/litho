@@ -34,7 +34,6 @@ object Verifier {
   }
 
   def fixMacStyle(sourceFile: File, destFile: File, style: FontStyle): File = {
-    val originalFont = FontLoader.fontFromFile(sourceFile)
     val fontBuilder = TestFontUtils.builderForFontFile(sourceFile)
     val headerTable = fontBuilder.getTableBuilder(Tag.head).asInstanceOf[FontHeaderTable]
     val writableFontData = WritableFontData.createWritableFontData(headerTable.readFontData())

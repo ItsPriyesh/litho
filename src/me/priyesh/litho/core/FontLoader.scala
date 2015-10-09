@@ -17,7 +17,6 @@
 package me.priyesh.litho.core
 
 import java.io.{File, FileInputStream}
-
 import com.google.typography.font.sfntly.{Font, FontFactory}
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request.Builder
@@ -41,6 +40,8 @@ object FontLoader {
     if (folder.exists && folder.isDirectory) folder.listFiles.filter(isVisibleFile).toList
     else List[File]()
   }
+
+  def unrecognizedStyleFound(files: List[File]): Boolean = files.exists(file => FontStyle.FileNameToFontStyleMap.get(file.getName).isEmpty)
 
   private def pathBuilder(name: String, style: FontStyle): String = s"./download/$name/${style.name}"
 

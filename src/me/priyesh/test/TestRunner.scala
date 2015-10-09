@@ -21,18 +21,28 @@ object TestRunner {
   def main(args: Array[String]): Unit = {
     import TestCases._
 
-    run(testPackagingFromBasicStyles())
+    Seq(
+      test_packaging_from_basic_styles(),
+      test_verifying_invalid_fonts(),
+      test_packaging_fail_fix_re_verify_succeed()
+    ) foreach run
   }
 
-  def run(test: TestFunction): Unit = println(s"${test.name} ${if (test()) "passed" else "failed"}")
+  def run(fun: TestFunction): Unit = {
+    println(s"=== ${fun.name} ===")
+    val result = fun.execute()
+    if (fun.test.isDefined)  println(if (result.get) "Passed ✔" else "Failed ✖")
+    println()
+  }
 
   case class TestFunction(name: String,
                           private val before: () => Unit = () => (),
-                          private val test: () => Boolean,
+                          test: Option[() => Boolean] = None,
                           private val after: () => Unit = () => ()) {
-    def apply() = {
+
+    def execute(): Option[Boolean] = {
       before()
-      val result = test()
+      val result = if (test.isDefined) Some(test.get.apply()) else None
       after()
       result
     }

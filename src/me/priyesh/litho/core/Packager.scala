@@ -29,14 +29,14 @@ object Packager {
 
   private def folderExists(name: String): Boolean = new File(s"./$name").exists()
 
-  private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
+ /* private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
     files.find(file => {
       val name = file.getName.toUpperCase
       if (exclude.isEmpty) name.contains(search.toUpperCase)
       else name.contains(search.toUpperCase) && !name.contains(exclude.get.toUpperCase)
     })
   }
-
+*/
   def buildPackageFromBasics(folderName: String): Unit = {
     import Strings._
     import Verifier._
@@ -87,10 +87,10 @@ object Packager {
   }
 
   private def findBasicFiles(files: List[File]): List[File] = {
-    val regular = findFile(files, "regular")
-    val italic = findFile(files, "italic", exclude = Some("bold"))
-    val bold = findFile(files, "bold", exclude = Some("italic"))
-    val boldItalic = findFile(files, "bolditalic")
+    val regular = files.find(_.getName equalsIgnoreCase "Roboto-Regular.ttf")
+    val italic = files.find(_.getName equalsIgnoreCase "Roboto-Italic.ttf")
+    val bold = files.find(_.getName equalsIgnoreCase "Roboto-Bold.ttf")
+    val boldItalic = files.find(_.getName equalsIgnoreCase "Roboto-BoldItalic.ttf")
 
     val basics = List(regular, italic, bold, boldItalic)
     if (basics.exists(_.isEmpty)) List()

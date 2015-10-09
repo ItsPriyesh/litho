@@ -25,19 +25,40 @@ import me.priyesh.test.TestRunner.TestFunction
 
 object TestCases {
 
-  def testPackagingFromBasicStyles() = {
+  def test_packaging_from_basic_styles() = {
     val folderName = "test/Aleo"
-    TestFunction("testPackagingFromBasicStyles",
-      test = () => {
+    TestFunction("Testing Packaging from Basic Styles",
+      test = Some(() => {
         val args = Array("package", folderName)
         Main.main(args)
         def fileExists(style: FontStyle): Boolean = new File(s"${folderName}Generated/${style.name}").exists()
         FontStyle.AllStyles.forall(fileExists)
+      }),
+      after = () => {
+        new File(s"${folderName}Generated/").listFiles().map(_.toPath).foreach(Files.delete)
+        Files.delete(new File(s"${folderName}Generated/").toPath)
+      })
+  }
+
+  def test_verifying_invalid_fonts() = {
+    val folderName = "test/Aleo_borked"
+    TestFunction("Testing attempt to verify fonts with invalid macstyles",
+      before = () => {
+        val args = Array("verify", folderName)
+        Main.main(args)
+      })
+  }
+
+  def test_packaging_fail_fix_re_verify_succeed() = {
+    val folderName = "test/Aleo_borked"
+    TestFunction("Testing packaging (and failing), fixing, re-verifying (and succeeding)",
+      before = () => {
+        val args = Array("package", folderName)
+        Main.main(args)
       },
       after = () => {
         new File(s"${folderName}Generated/").listFiles().map(_.toPath).foreach(Files.delete)
         Files.delete(new File(s"${folderName}Generated/").toPath)
       })
   }
-  
 }
