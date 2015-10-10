@@ -32,7 +32,7 @@ object TestCases {
   private val InvalidFonts = "testResources/Aleo_borked"
 
   private def deleteGeneratedFolder(name: String): Unit = {
-    val folder = new File(s"${name}Generated/")
+    val folder = new File(s"${name}Generated")
     if (folder.exists) {
       folder.listFiles().map(_.toPath).foreach(Files.delete)
       Files.delete(folder.toPath)
@@ -56,32 +56,43 @@ object TestCases {
   def test_verifying_invalid_fonts() = {
     val folderName = InvalidFonts
     TestFunction("Testing attempt to verify fonts with invalid macstyles",
-      before = () => {
+      test = Some(() => {
         val args = Array("verify", folderName)
         Main.main(args)
+
+        FontLoader.filesAndStylesFromFolder(folderName).exists(f => !Verifier.fontIsValid(f._1, f._2))
       })
+    )
   }
 
   def test_packaging_invalid_fonts() = {
     val folderName = InvalidFonts
     TestFunction("Testing attempt to package fonts with invalid macstyles",
-      before = () => {
+      test = Some(() => {
         val args = Array("package", folderName)
         Main.main(args)
+
+        FontLoader.filesAndStylesFromFolder(folderName).exists(f => !Verifier.fontIsValid(f._1, f._2))
       })
+    )
   }
 
   def test_fixing_invalid_fonts() = {
     import Verifier._
     val folderName = InvalidFonts
     TestFunction("Testing fixing fonts with invalid macstyles",
-      before = () => {
-        val args = Array("fix", folderName)
-        Main.main(args)
-      },
       test = Some(() => {
-        FontLoader.loadFileStyleSet(InvalidFonts + "Generated").forall(fontIsValid _ tupled)
-      })
+        val args1 = Array("verify", folderName)
+        Main.main(args1)
+
+        val args2 = Array("fix", folderName)
+        Main.main(args2)
+
+        FontLoader.filesAndStylesFromFolder(InvalidFonts + "Generated").forall(fontIsValid _ tupled)
+      }),
+      after = () => {
+        deleteGeneratedFolder(InvalidFonts)
+      }
     )
   }
 }

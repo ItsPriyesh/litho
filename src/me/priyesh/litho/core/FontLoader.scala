@@ -42,7 +42,7 @@ object FontLoader {
     else List[File]()
   }
 
-  def loadFileStyleSet(folderName: String): Set[(File, FontStyle)] =
+  def filesAndStylesFromFolder(folderName: String): Set[(File, FontStyle)] =
     filesFromFolder(folderName).flatMap(file => FileNameToFontStyleMap.get(file.getName).map(style => (file, style))) toSet
 
   def unrecognizedStyleFound(files: List[File]): Boolean = files.exists(file => FontStyle.FileNameToFontStyleMap.get(file.getName).isEmpty)

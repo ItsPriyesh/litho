@@ -51,7 +51,7 @@ object Main {
     if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
     } else {
-      val filesAndStyles = loadFileStyleSet(folderName)
+      val filesAndStyles = filesAndStylesFromFolder(folderName)
       filesAndStyles.foreach((f: (File, FontStyle)) => {
         val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
         Verifier.fixMacStyle(f._1, dest, f._2)
@@ -72,7 +72,7 @@ object Main {
     if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
     } else {
-      val filesAndStyles = loadFileStyleSet(folderName)
+      val filesAndStyles = filesAndStylesFromFolder(folderName)
       val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
 
       if (invalidFonts.nonEmpty) {

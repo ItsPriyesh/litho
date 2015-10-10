@@ -29,14 +29,6 @@ object Packager {
 
   private def folderExists(name: String): Boolean = new File(s"./$name").exists()
 
- /* private def findFile(files: List[File], search: String, exclude: Option[String] = None): Option[File] = {
-    files.find(file => {
-      val name = file.getName.toUpperCase
-      if (exclude.isEmpty) name.contains(search.toUpperCase)
-      else name.contains(search.toUpperCase) && !name.contains(exclude.get.toUpperCase)
-    })
-  }
-*/
   def buildPackageFromBasics(folderName: String): Unit = {
     import Strings._
     import Verifier._
