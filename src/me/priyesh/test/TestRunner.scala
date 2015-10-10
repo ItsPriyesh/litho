@@ -36,7 +36,7 @@ object TestRunner {
     println(if (passedTests == totalTests) "All tests passed" else "Some tests failed")
   }
 
-  def run(fun: TestFunction): Boolean = {
+  private def run(fun: TestFunction): Boolean = {
     println(s"=== ${fun.name} ===")
     val result = fun.test()
     println((if (result) "Passed ✔" else "Failed ✖") + "\n")

@@ -37,13 +37,13 @@ object Main {
     }
   }
 
-  def showSplash(): Unit = {
+  private def showSplash(): Unit = {
     import Config._
     println(SplashText)
     println(s"Version $Version || By $Author")
   }
 
-  def fix(folderName: String): Unit = {
+  private def fix(folderName: String): Unit = {
     println("Fixing")
 
     val files = filesFromFolder(folderName)
@@ -59,12 +59,12 @@ object Main {
     }
   }
 
-  def buildPackage(folderName: String): Unit = {
+  private def buildPackage(folderName: String): Unit = {
     println("Building package")
     Packager.buildPackage(folderName)
   }
 
-  def verify(folderName: String): Unit = {
+  private def verify(folderName: String): Unit = {
     println("Verifying")
 
     val files = filesFromFolder(folderName)

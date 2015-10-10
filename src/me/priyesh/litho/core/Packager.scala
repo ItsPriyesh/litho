@@ -25,7 +25,6 @@ import Verifier._
 
 object Packager {
 
-
   private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
 
   def buildPackage(folderName: String): Unit = {
