@@ -31,20 +31,11 @@ object TestRunner {
 
   def run(fun: TestFunction): Unit = {
     println(s"=== ${fun.name} ===")
-    val result = fun.execute()
-    if (result.isDefined) println(if (result.get) "Passed ✔" else "Failed ✖")
-    fun.runAfter()
+    println(if (fun.test()) "Passed ✔" else "Failed ✖")
+    fun.after()
     println()
   }
 
-  case class TestFunction(name: String, test: Option[() => Boolean] = None, private val after: () => Unit = () => ()) {
-
-    def execute(): Option[Boolean] = {
-      val result = if (test.isDefined) Some(test.get.apply()) else None
-      result
-    }
-
-    def runAfter(): Unit = after()
-  }
+  final case class TestFunction(name: String, test: () => Boolean, after: () => Unit = () => ())
 
 }

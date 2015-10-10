@@ -42,12 +42,12 @@ object TestCases {
   def test_packaging_from_basic_styles() = {
     val folderName = ValidFonts
     TestFunction("Testing packaging from basic styles",
-      test = Some(() => {
+      test = () => {
         val args = Array("package", folderName)
         Main.main(args)
         def fileExists(style: FontStyle): Boolean = new File(s"${folderName}Generated/${style.name}").exists()
         FontStyle.AllStyles.forall(fileExists)
-      }),
+      },
       after = () => {
         deleteGeneratedFolder(folderName)
       })
@@ -56,24 +56,24 @@ object TestCases {
   def test_verifying_invalid_fonts() = {
     val folderName = InvalidFonts
     TestFunction("Testing attempt to verify fonts with invalid macstyles",
-      test = Some(() => {
+      test = () => {
         val args = Array("verify", folderName)
         Main.main(args)
 
         FontLoader.filesAndStylesFromFolder(folderName).exists(f => !Verifier.fontIsValid(f._1, f._2))
-      })
+      }
     )
   }
 
   def test_packaging_invalid_fonts() = {
     val folderName = InvalidFonts
     TestFunction("Testing attempt to package fonts with invalid macstyles",
-      test = Some(() => {
+      test = () => {
         val args = Array("package", folderName)
         Main.main(args)
 
         FontLoader.filesAndStylesFromFolder(folderName).exists(f => !Verifier.fontIsValid(f._1, f._2))
-      })
+      }
     )
   }
 
@@ -81,7 +81,7 @@ object TestCases {
     import Verifier._
     val folderName = InvalidFonts
     TestFunction("Testing fixing fonts with invalid macstyles",
-      test = Some(() => {
+      test = () => {
         val args1 = Array("verify", folderName)
         Main.main(args1)
 
@@ -89,7 +89,7 @@ object TestCases {
         Main.main(args2)
 
         FontLoader.filesAndStylesFromFolder(InvalidFonts + "Generated").forall(fontIsValid _ tupled)
-      }),
+      },
       after = () => {
         deleteGeneratedFolder(InvalidFonts)
       }
