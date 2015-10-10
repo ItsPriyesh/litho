@@ -25,8 +25,14 @@ import me.priyesh.test.TestRunner.TestFunction
 
 object TestCases {
 
+  /* These fonts have correct macstyles */
+  private val ValidFonts = "testResources/Aleo"
+
+  /* One of these fonts has an incorrect macstyle (Roboto-Italic.ttf) */
+  private val InvalidFonts = "testResources/Aleo_borked"
+
   def test_packaging_from_basic_styles() = {
-    val folderName = "test/Aleo"
+    val folderName = ValidFonts
     TestFunction("Testing Packaging from Basic Styles",
       test = Some(() => {
         val args = Array("package", folderName)
@@ -41,7 +47,7 @@ object TestCases {
   }
 
   def test_verifying_invalid_fonts() = {
-    val folderName = "test/Aleo_borked"
+    val folderName = InvalidFonts
     TestFunction("Testing attempt to verify fonts with invalid macstyles",
       before = () => {
         val args = Array("verify", folderName)
@@ -50,11 +56,13 @@ object TestCases {
   }
 
   def test_packaging_fail_fix_re_verify_succeed() = {
-    val folderName = "test/Aleo_borked"
+    val folderName = InvalidFonts
     TestFunction("Testing packaging (and failing), fixing, re-verifying (and succeeding)",
       before = () => {
         val args = Array("package", folderName)
         Main.main(args)
+
+
       },
       after = () => {
         new File(s"${folderName}Generated/").listFiles().map(_.toPath).foreach(Files.delete)
