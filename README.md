@@ -1,2 +1,2 @@
 # Litho
-Litho is a tool for creating and verifying font packages for [Fontster](https://github.com/ItsPriyesh/Fontster).
+Litho is a tool for creating, verifying and fixing font packages used by [Fontster](https://github.com/ItsPriyesh/Fontster).
