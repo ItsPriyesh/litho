@@ -24,6 +24,6 @@ object Strings {
   val ErrorInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned."
   val ErrorCantFindFolder = "Litho could not find the specified folder."
   val ErrorUnrecognizedStyle = "An unrecognized style was found.\nEnsure that fonts in the specified folder are named correctly."
-
+  val ErrorNotEnoughStylesProvided = "Not enough styles were provided.\n" + ErrorEnsureBasicsExist
   val PackageWasCreated = "Package was created"
 }

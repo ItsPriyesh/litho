@@ -19,74 +19,59 @@ package me.priyesh.litho.core
 import java.io.File
 import java.nio.file._
 
-import me.priyesh.litho.Strings
+import me.priyesh.litho.Strings._
+import me.priyesh.litho.core.FontStyle._
+import Verifier._
 
 object Packager {
 
-  private def containsInvalidFiles(files: List[File]): Boolean = files.exists(!_.getName.toUpperCase.endsWith(".TTF"))
 
-  private def invalidFileCount(files: List[File]): Boolean = files.size != FontStyle.BasicStyles.size
+  private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
 
-  private def folderExists(name: String): Boolean = new File(s"./$name").exists()
-
-  def buildPackageFromBasics(folderName: String): Unit = {
-    import Strings._
-    import Verifier._
-
-    if (!folderExists(folderName)) {
+  def buildPackage(folderName: String): Unit = {
+    if (!new File(s"./$folderName").exists()) {
       println(ErrorCantFindFolder)
     } else {
-      val files = FontLoader.filesFromFolder(folderName)
-      if (containsInvalidFiles(files)) {
-        println(ErrorInvalidFiles)
-      } else if (invalidFileCount(files)) {
-        println(s"$ErrorInvalidFileCount\n$ErrorEnsureBasicsExist")
+      val filesAndStyles = FontLoader.filesAndStylesFromFolder(folderName)
+      if (filesAndStyles.forall(fontIsValid _ tupled)) {
+        packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
+        println(PackageWasCreated)
       } else {
-        val basicFiles = findBasicFiles(files)
-        if (basicFiles.nonEmpty) {
-          val filesAndStyles = basicFiles zip FontStyle.BasicStyles
-          if (filesAndStyles.forall(fontIsValid _ tupled)) {
-            generateDerivatives(folderName, filesAndStyles)
-            println(PackageWasCreated)
-          } else {
-            println(ErrorInvalidMacStyles)
-          }
-        } else {
-          println(s"$ErrorBasicsMissing\n$ErrorEnsureBasicsExist")
-        }
+        println(ErrorInvalidMacStyles)
       }
     }
   }
 
-  private def generateDerivatives(folderName: String, basics: List[(File, FontStyle)]): Unit = {
-    import FontStyle._
+  private def packageFonts(folderName: String, stylesToFiles: Map[FontStyle, File]): Unit = {
+    val generatedFolder = new File(s"./${folderName}Generated/")
+    generatedFolder.mkdirs()
 
-    new File(s"./${folderName}Generated/").mkdirs()
+    val providedStyles = stylesToFiles.keySet
+    val providedFiles = stylesToFiles.values.toSet
 
-    def buildDestFile(style: FontStyle): File = new File(s"./${folderName}Generated/${style.name}")
+    def createDestinationFile(name: String): File = new File(s"${generatedFolder.getPath}/$name")
 
-    basics.foreach(styleAndFile => {
-      val basicFile = styleAndFile._1
-      val basicStyle = styleAndFile._2
-      val derivatives = DerivativeMap.getOrElse(basicStyle, List())
-      derivatives.foreach(style => copyFile(basicFile, buildDestFile(style)))
-    })
+    if (enoughStylesProvided(providedStyles)) {
+      // Copy all the styles that have already been provided
+      providedFiles.foreach(file => copyFile(file, createDestinationFile(file.getName)))
+
+      // Aggregate the styles that haven't been provided
+      val stylesToGenerate = AllStyles diff providedStyles
+      stylesToGenerate.foreach(style => {
+        copyFile(stylesToFiles.get(getFallbackStyle(style, providedStyles)).get, createDestinationFile(style.name))
+      })
+
+    } else {
+      println(ErrorNotEnoughStylesProvided)
+    }
   }
+
+  private def getFallbackStyle(style: FontStyle, providedStyles: Set[FontStyle]): FontStyle =
+    StyleFallbackMap.get(style).get.find(providedStyles.contains).get
 
   private def copyFile(source: File, dest: File): Unit = {
     def fileToPath(file: File): Path = Paths.get(file.toURI)
     Files.copy(fileToPath(source), fileToPath(dest), StandardCopyOption.REPLACE_EXISTING)
-  }
-
-  private def findBasicFiles(files: List[File]): List[File] = {
-    val regular = files.find(_.getName equalsIgnoreCase "Roboto-Regular.ttf")
-    val italic = files.find(_.getName equalsIgnoreCase "Roboto-Italic.ttf")
-    val bold = files.find(_.getName equalsIgnoreCase "Roboto-Bold.ttf")
-    val boldItalic = files.find(_.getName equalsIgnoreCase "Roboto-BoldItalic.ttf")
-
-    val basics = List(regular, italic, bold, boldItalic)
-    if (basics.exists(_.isEmpty)) List()
-    else basics.flatten
   }
 
 }

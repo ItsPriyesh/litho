@@ -61,7 +61,7 @@ object Main {
 
   def buildPackage(folderName: String): Unit = {
     println("Building package")
-    Packager.buildPackageFromBasics(folderName)
+    Packager.buildPackage(folderName)
   }
 
   def verify(folderName: String): Unit = {

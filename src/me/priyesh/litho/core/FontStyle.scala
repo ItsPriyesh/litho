@@ -34,7 +34,7 @@ object FontStyle {
   val CondensedBold = FontStyle("Condensed-Bold")
   val CondensedBoldItalic = FontStyle("Condensed-BoldItalic")
 
-  val AllStyles = List(
+  val AllStyles = Set(
     Regular, Italic,
     Bold, BoldItalic,
     Light, LightItalic,
@@ -43,13 +43,20 @@ object FontStyle {
     CondensedBold, CondensedBoldItalic
   )
 
-  val BasicStyles = List(Regular, Italic, Bold, BoldItalic)
+  val BasicStyles = Set(Regular, Italic, Bold, BoldItalic)
 
-  val DerivativeMap = Map(
-    Regular -> List(Regular, Thin, Light, CondensedRegular),
-    Italic -> List(Italic, ThinItalic, LightItalic, CondensedItalic),
-    Bold -> List(Bold, CondensedBold),
-    BoldItalic -> List(BoldItalic, CondensedBoldItalic)
+
+  // Map of styles to suitable replacement styles.
+  // Replacements are ordered in descending order of closest style
+  val StyleFallbackMap = Map(
+    Light -> Seq(Thin, Regular),
+    LightItalic -> Seq(ThinItalic, Italic),
+    Thin -> Seq(Light, Regular),
+    ThinItalic -> Seq(LightItalic, Italic),
+    CondensedRegular -> Seq(Regular),
+    CondensedItalic -> Seq(Italic),
+    CondensedBold -> Seq(Bold),
+    CondensedBoldItalic -> Seq(BoldItalic)
   )
 
   val FileNameToFontStyleMap = Map(
@@ -66,5 +73,5 @@ object FontStyle {
     "RobotoCondensed-Bold.ttf" -> CondensedBold,
     "RobotoCondensed-BoldItalic.ttf" -> CondensedBoldItalic
   )
-
+  
 }
