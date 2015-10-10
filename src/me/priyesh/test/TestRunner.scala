@@ -21,19 +21,27 @@ object TestRunner {
   def main(args: Array[String]): Unit = {
     import TestCases._
 
-    Seq(
+    val testCases = Seq(
       test_packaging_from_basic_styles(),
       test_verifying_invalid_fonts(),
       test_packaging_invalid_fonts(),
       test_fixing_invalid_fonts()
-    ) foreach run
+    ) map run
+
+    val passedTests = testCases count identity
+    val totalTests = testCases size
+
+    println("===== TEST SUMMARY =====")
+    println(s"Passed: $passedTests / $totalTests (${(passedTests / totalTests) * 100.0}%)")
+    println(if (passedTests == totalTests) "All tests passed" else "Some tests failed")
   }
 
-  def run(fun: TestFunction): Unit = {
+  def run(fun: TestFunction): Boolean = {
     println(s"=== ${fun.name} ===")
-    println(if (fun.test()) "Passed ✔" else "Failed ✖")
+    val result = fun.test()
+    println((if (result) "Passed ✔" else "Failed ✖") + "\n")
     fun.after()
-    println()
+    result
   }
 
   final case class TestFunction(name: String, test: () => Boolean, after: () => Unit = () => ())
