@@ -31,6 +31,14 @@ object TestCases {
   /* One of these fonts has an incorrect macstyle (Roboto-Italic.ttf) */
   private val InvalidFonts = "testResources/Aleo_borked"
 
+  private def deleteGeneratedFolder(name: String): Unit = {
+    val folder = new File(s"${name}Generated/")
+    if (folder.exists) {
+      folder.listFiles().map(_.toPath).foreach(Files.delete)
+      Files.delete(folder.toPath)
+    }
+  }
+
   def test_packaging_from_basic_styles() = {
     val folderName = ValidFonts
     TestFunction("Testing Packaging from Basic Styles",
@@ -41,8 +49,7 @@ object TestCases {
         FontStyle.AllStyles.forall(fileExists)
       }),
       after = () => {
-        new File(s"${folderName}Generated/").listFiles().map(_.toPath).foreach(Files.delete)
-        Files.delete(new File(s"${folderName}Generated/").toPath)
+        deleteGeneratedFolder(folderName)
       })
   }
 
@@ -61,12 +68,9 @@ object TestCases {
       before = () => {
         val args = Array("package", folderName)
         Main.main(args)
-
-
       },
       after = () => {
-        new File(s"${folderName}Generated/").listFiles().map(_.toPath).foreach(Files.delete)
-        Files.delete(new File(s"${folderName}Generated/").toPath)
+        deleteGeneratedFolder(folderName)
       })
   }
 }
