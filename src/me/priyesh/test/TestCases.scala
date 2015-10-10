@@ -41,7 +41,7 @@ object TestCases {
 
   def test_packaging_from_basic_styles() = {
     val folderName = ValidFonts
-    TestFunction("Testing Packaging from Basic Styles",
+    TestFunction("Testing packaging from basic styles",
       test = Some(() => {
         val args = Array("package", folderName)
         Main.main(args)
@@ -62,15 +62,12 @@ object TestCases {
       })
   }
 
-  def test_packaging_fail_fix_re_verify_succeed() = {
+  def test_packaging_invalid_fonts() = {
     val folderName = InvalidFonts
-    TestFunction("Testing packaging (and failing), fixing, re-verifying (and succeeding)",
+    TestFunction("Testing attempt to package fonts with invalid macstyles",
       before = () => {
         val args = Array("package", folderName)
         Main.main(args)
-      },
-      after = () => {
-        deleteGeneratedFolder(folderName)
       })
   }
 }
