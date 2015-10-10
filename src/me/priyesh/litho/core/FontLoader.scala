@@ -20,6 +20,7 @@ import java.io.{File, FileInputStream}
 import com.google.typography.font.sfntly.{Font, FontFactory}
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request.Builder
+import me.priyesh.litho.core.FontStyle._
 import okio.Okio
 
 object FontLoader {
@@ -40,6 +41,9 @@ object FontLoader {
     if (folder.exists && folder.isDirectory) folder.listFiles.filter(isVisibleFile).toList
     else List[File]()
   }
+
+  def loadFileStyleSet(folderName: String): Set[(File, FontStyle)] =
+    filesFromFolder(folderName).flatMap(file => FileNameToFontStyleMap.get(file.getName).map(style => (file, style))) toSet
 
   def unrecognizedStyleFound(files: List[File]): Boolean = files.exists(file => FontStyle.FileNameToFontStyleMap.get(file.getName).isEmpty)
 

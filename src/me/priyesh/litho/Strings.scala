@@ -23,6 +23,7 @@ object Strings {
   val ErrorEnsureBasicsExist = "Ensure that you include the following styles: Regular, Italic, Bold, BoldItalic."
   val ErrorInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned."
   val ErrorCantFindFolder = "Litho could not find the specified folder."
+  val ErrorUnrecognizedStyle = "An unrecognized style was found.\nEnsure that fonts in the specified folder are named correctly."
 
   val PackageWasCreated = "Package was created"
 }

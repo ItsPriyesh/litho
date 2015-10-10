@@ -20,7 +20,7 @@ import java.io.File
 import java.nio.file.Files
 
 import me.priyesh.litho.Main
-import me.priyesh.litho.core.FontStyle
+import me.priyesh.litho.core.{Verifier, FontLoader, FontStyle}
 import me.priyesh.test.TestRunner.TestFunction
 
 object TestCases {
@@ -69,5 +69,19 @@ object TestCases {
         val args = Array("package", folderName)
         Main.main(args)
       })
+  }
+
+  def test_fixing_invalid_fonts() = {
+    import Verifier._
+    val folderName = InvalidFonts
+    TestFunction("Testing fixing fonts with invalid macstyles",
+      before = () => {
+        val args = Array("fix", folderName)
+        Main.main(args)
+      },
+      test = Some(() => {
+        FontLoader.loadFileStyleSet(InvalidFonts + "Generated").forall(fontIsValid _ tupled)
+      })
+    )
   }
 }

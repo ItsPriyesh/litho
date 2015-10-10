@@ -24,7 +24,8 @@ object TestRunner {
     Seq(
       test_packaging_from_basic_styles(),
       test_verifying_invalid_fonts(),
-      test_packaging_invalid_fonts()
+      test_packaging_invalid_fonts(),
+      test_fixing_invalid_fonts()
     ) foreach run
   }
 

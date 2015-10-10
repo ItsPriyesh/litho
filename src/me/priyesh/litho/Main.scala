@@ -16,9 +16,11 @@
 
 package me.priyesh.litho
 
+import java.io.File
+
+import me.priyesh.litho.Strings._
 import me.priyesh.litho.core.FontLoader._
-import me.priyesh.litho.core.FontStyle._
-import me.priyesh.litho.core.Packager
+import me.priyesh.litho.core.{FontStyle, Verifier, Packager}
 import me.priyesh.litho.core.Verifier._
 
 object Main {
@@ -46,6 +48,15 @@ object Main {
 
     val files = filesFromFolder(folderName)
 
+    if (unrecognizedStyleFound(files)) {
+      println(ErrorUnrecognizedStyle)
+    } else {
+      val filesAndStyles = loadFileStyleSet(folderName)
+      filesAndStyles.foreach((f: (File, FontStyle)) => {
+        val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
+        Verifier.fixMacStyle(f._1, dest, f._2)
+      })
+    }
   }
 
   def buildPackage(folderName: String): Unit = {
@@ -59,11 +70,10 @@ object Main {
     val files = filesFromFolder(folderName)
 
     if (unrecognizedStyleFound(files)) {
-      println("An unrecognized style was found.\nEnsure that fonts in the specified folder are named correctly.")
+      println(ErrorUnrecognizedStyle)
     } else {
-      val filesAndStyles = files.flatMap(file => FileNameToFontStyleMap.get(file.getName).map(style => (file, style))) toSet
-      val validFonts = filesAndStyles filter { case (file, style) => fontIsValid(file, style) }
-      val invalidFonts = filesAndStyles diff validFonts
+      val filesAndStyles = loadFileStyleSet(folderName)
+      val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
 
       if (invalidFonts.nonEmpty) {
         println(s"${invalidFonts.size} styles are invalid:")
