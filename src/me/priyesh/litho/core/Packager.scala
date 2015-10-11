@@ -41,12 +41,12 @@ object Packager {
   private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
 
   private def packageFonts(folderName: String, stylesToFiles: Map[FontStyle, File]): Unit = {
-    val generatedFolder = new File(s"./${folderName}Generated/")
-    generatedFolder.mkdirs()
+    val packagedFolder = new File(s"./${folderName}FontPack/")
+    packagedFolder.mkdirs()
 
     val providedStyles = stylesToFiles.keySet
 
-    def createDestinationFile(name: String): File = new File(s"${generatedFolder.getPath}/$name")
+    def createDestinationFile(name: String): File = new File(s"${packagedFolder.getPath}/$name")
 
     if (enoughStylesProvided(providedStyles)) {
       // Copy all the styles that have already been provided

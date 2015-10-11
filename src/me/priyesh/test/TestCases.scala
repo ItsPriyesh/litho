@@ -54,11 +54,10 @@ object TestCases {
       test = () => {
         val args = Array("package", folderName)
         Main.main(args)
-        def fileExists(style: FontStyle): Boolean = new File(s"${folderName}Generated/${style.name}").exists()
-        FontStyle.AllStyles.forall(fileExists)
+        FontStyle.AllStyles.forall(style => new File(s"${folderName}FontPack/${style.name}").exists())
       },
       after = () => {
-        deleteFolder(folderName + "Generated")
+        deleteFolder(folderName + "FontPack")
       })
   }
 
