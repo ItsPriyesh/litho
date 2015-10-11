@@ -42,7 +42,7 @@ object Verifier {
         println(s"${invalidFonts.size} styles are invalid:")
         invalidFonts.foreach(p => println(s"${p._2.name}"))
       } else {
-        println("All fonts were valid")
+        println(AllFontsValid)
       }
     }
   }
@@ -60,6 +60,7 @@ object Verifier {
         val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
         Verifier.fixMacStyle(f._1, dest, f._2)
       })
+      println(FontFixingComplete)
     }
   }
 

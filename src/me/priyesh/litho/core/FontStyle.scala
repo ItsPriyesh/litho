@@ -45,7 +45,6 @@ object FontStyle {
 
   val BasicStyles = Set(Regular, Italic, Bold, BoldItalic)
 
-
   // Map of styles to suitable replacement styles.
   // Replacements are ordered in descending order of closest style
   val StyleFallbackMap = Map(
