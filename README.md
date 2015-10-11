@@ -22,7 +22,7 @@ litho fix Helvetica
 # Generates missing styles to build a full font package
 litho package Helvetica
 ``` 
-
+This will create a folder named `HelveticaFontPack` containing all twelve verified styles.
 
 License
 --------
