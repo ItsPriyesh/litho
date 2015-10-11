@@ -25,6 +25,8 @@ object FontLoader {
 
   private val fontFactory = FontFactory.getInstance()
 
+  def folderExists(folderName: String) = new File(s"./$folderName").exists()
+
   def fontFromFile(file: File): Font = fontFactory.loadFonts(new FileInputStream(file))(0)
 
   def filesFromFolder(folderName: String): List[File] = {

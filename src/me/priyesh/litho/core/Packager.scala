@@ -21,18 +21,15 @@ import java.nio.file._
 
 import me.priyesh.litho.Strings._
 import me.priyesh.litho.core.FontStyle._
-import Verifier._
 
 object Packager {
 
-  private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
-
   def buildPackage(folderName: String): Unit = {
-    if (!new File(s"./$folderName").exists()) {
+    if (!FontLoader.folderExists(folderName)) {
       println(ErrorCantFindFolder)
     } else {
       val filesAndStyles = FontLoader.filesAndStylesFromFolder(folderName)
-      if (filesAndStyles.forall(fontIsValid _ tupled)) {
+      if (filesAndStyles.forall(Verifier.fontIsValid _ tupled)) {
         packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
         println(PackageWasCreated)
       } else {
@@ -40,6 +37,8 @@ object Packager {
       }
     }
   }
+
+  private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
 
   private def packageFonts(folderName: String, stylesToFiles: Map[FontStyle, File]): Unit = {
     val generatedFolder = new File(s"./${folderName}Generated/")

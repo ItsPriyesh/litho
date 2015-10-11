@@ -30,7 +30,9 @@ object Verifier {
   def verify(folderName: String): Unit = {
     val files = filesFromFolder(folderName)
 
-    if (unrecognizedStyleFound(files)) {
+    if (!FontLoader.folderExists(folderName)) {
+      println(ErrorCantFindFolder)
+    } else if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
     } else {
       val filesAndStyles = filesAndStylesFromFolder(folderName)
@@ -48,7 +50,9 @@ object Verifier {
   def fix(folderName: String): Unit = {
     val files = filesFromFolder(folderName)
 
-    if (unrecognizedStyleFound(files)) {
+    if (!FontLoader.folderExists(folderName)) {
+      println(ErrorCantFindFolder)
+    } else if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
     } else {
       val filesAndStyles = filesAndStylesFromFolder(folderName)
@@ -59,7 +63,7 @@ object Verifier {
     }
   }
 
-  private def fontIsValid(fontFile: File, style: FontStyle): Boolean = {
+  def fontIsValid(fontFile: File, style: FontStyle): Boolean = {
     val macStyle = FontLoader.fontFromFile(fontFile).getTable[FontHeaderTable](Tag.head).macStyleAsInt()
     val requiredFlags = getRequiredFlags(style)
     val allNeededFlags = requiredFlags.forall(flag => (macStyle & (1 << flag)) != 0)
@@ -76,7 +80,7 @@ object Verifier {
     headerTableBuilder.setMacStyleAsInt(getCorrectMacStyle(style))
 
     val fixedHeaderTable = headerTableBuilder.build()
-    
+
     val fixedFontBuilder = TestFontUtils.builderForFontFile(sourceFile)
     fixedFontBuilder.newTableBuilder(Tag.head, fixedHeaderTable.readFontData())
 
