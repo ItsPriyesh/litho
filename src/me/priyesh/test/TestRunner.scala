@@ -32,7 +32,7 @@ object TestRunner {
     val totalTests = testCases size
 
     println("===== TEST SUMMARY =====")
-    println(s"Passed: $passedTests / $totalTests (${(passedTests / totalTests) * 100.0}%)")
+    println(s"Passed: $passedTests / $totalTests (${(passedTests.toDouble / totalTests.toDouble) * 100}%)")
     println(if (passedTests == totalTests) "All tests passed" else "Some tests failed")
   }
 

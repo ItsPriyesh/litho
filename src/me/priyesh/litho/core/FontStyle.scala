@@ -59,18 +59,18 @@ object FontStyle {
   )
 
   val FileNameToFontStyleMap = Map(
-    "Roboto-Regular.ttf" -> Regular,
-    "Roboto-Italic.ttf" -> Italic,
-    "Roboto-Bold.ttf" -> Bold,
-    "Roboto-BoldItalic.ttf" -> BoldItalic,
-    "Roboto-Light.ttf" -> Light,
-    "Roboto-LightItalic.ttf" -> LightItalic,
-    "Roboto-Thin.ttf" -> Thin,
-    "Roboto-ThinItalic.ttf" -> ThinItalic,
-    "RobotoCondensed-Regular.ttf" -> CondensedRegular,
-    "RobotoCondensed-Italic.ttf" -> CondensedItalic,
-    "RobotoCondensed-Bold.ttf" -> CondensedBold,
-    "RobotoCondensed-BoldItalic.ttf" -> CondensedBoldItalic
+    "Regular.ttf" -> Regular,
+    "Italic.ttf" -> Italic,
+    "Bold.ttf" -> Bold,
+    "BoldItalic.ttf" -> BoldItalic,
+    "Light.ttf" -> Light,
+    "LightItalic.ttf" -> LightItalic,
+    "Thin.ttf" -> Thin,
+    "ThinItalic.ttf" -> ThinItalic,
+    "Condensed-Regular.ttf" -> CondensedRegular,
+    "Condensed-Italic.ttf" -> CondensedItalic,
+    "Condensed-Bold.ttf" -> CondensedBold,
+    "Condensed-BoldItalic.ttf" -> CondensedBoldItalic
   )
   
 }

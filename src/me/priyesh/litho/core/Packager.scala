@@ -45,13 +45,12 @@ object Packager {
     generatedFolder.mkdirs()
 
     val providedStyles = stylesToFiles.keySet
-    val providedFiles = stylesToFiles.values.toSet
 
     def createDestinationFile(name: String): File = new File(s"${generatedFolder.getPath}/$name")
 
     if (enoughStylesProvided(providedStyles)) {
       // Copy all the styles that have already been provided
-      providedFiles.foreach(file => copyFile(file, createDestinationFile(file.getName)))
+      stylesToFiles.foreach(styleToFile => copyFile(styleToFile._2, createDestinationFile(styleToFile._1.name)))
 
       // Aggregate the styles that haven't been provided
       val stylesToGenerate = AllStyles diff providedStyles
