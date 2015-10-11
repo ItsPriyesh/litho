@@ -32,7 +32,7 @@ object Main {
         case "verify" => verify(args(1))
         case "package" => buildPackage(args(1))
         case "fix" => fix(args(1))
-        case default => println(s"$default is not a valid argument")
+        case default => println(s"'$default' is not a valid Litho command")
       }
     }
   }
