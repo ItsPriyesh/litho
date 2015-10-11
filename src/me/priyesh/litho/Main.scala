@@ -26,17 +26,21 @@ import me.priyesh.litho.core.Verifier._
 object Main {
 
   def main(args: Array[String]): Unit = {
+    def runIfFolderDefined(fun: (String) => Unit): Unit =
+      if (args isDefinedAt 1) fun(args(1)) else println("A folder must be specified")
+
     if (args.isEmpty) showSplash()
     else if (args.length > 3) println("Too many arguments")
     else {
       args(0) match {
-        case "verify" => verify(args(1))
-        case "package" => buildPackage(args(1))
-        case "fix" => fix(args(1))
+        case "verify" => runIfFolderDefined(verify)
+        case "package" => runIfFolderDefined(buildPackage)
+        case "fix" => runIfFolderDefined(fix)
         case default => println(s"'$default' is not a valid Litho command")
       }
     }
   }
+
 
   private def showSplash(): Unit = {
     import Config._
