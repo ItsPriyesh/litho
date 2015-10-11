@@ -22,10 +22,44 @@ import com.google.typography.font.sfntly.Tag
 import com.google.typography.font.sfntly.data.WritableFontData
 import com.google.typography.font.sfntly.sfntly.testutils.TestFontUtils
 import com.google.typography.font.sfntly.table.core.FontHeaderTable
+import me.priyesh.litho.Strings._
+import me.priyesh.litho.core.FontLoader._
 
 object Verifier {
 
-  def fontIsValid(fontFile: File, style: FontStyle): Boolean = {
+  def verify(folderName: String): Unit = {
+    val files = filesFromFolder(folderName)
+
+    if (unrecognizedStyleFound(files)) {
+      println(ErrorUnrecognizedStyle)
+    } else {
+      val filesAndStyles = filesAndStylesFromFolder(folderName)
+      val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
+
+      if (invalidFonts.nonEmpty) {
+        println(s"${invalidFonts.size} styles are invalid:")
+        invalidFonts.foreach(p => println(s"${p._2.name}"))
+      } else {
+        println("All fonts were valid")
+      }
+    }
+  }
+
+  def fix(folderName: String): Unit = {
+    val files = filesFromFolder(folderName)
+
+    if (unrecognizedStyleFound(files)) {
+      println(ErrorUnrecognizedStyle)
+    } else {
+      val filesAndStyles = filesAndStylesFromFolder(folderName)
+      filesAndStyles.foreach((f: (File, FontStyle)) => {
+        val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
+        Verifier.fixMacStyle(f._1, dest, f._2)
+      })
+    }
+  }
+
+  private def fontIsValid(fontFile: File, style: FontStyle): Boolean = {
     val macStyle = FontLoader.fontFromFile(fontFile).getTable[FontHeaderTable](Tag.head).macStyleAsInt()
     val requiredFlags = getRequiredFlags(style)
     val allNeededFlags = requiredFlags.forall(flag => (macStyle & (1 << flag)) != 0)
@@ -33,7 +67,7 @@ object Verifier {
     allNeededFlags && noExtraFlags
   }
 
-  def fixMacStyle(sourceFile: File, destFile: File, style: FontStyle): File = {
+  private def fixMacStyle(sourceFile: File, destFile: File, style: FontStyle): File = {
     val fontBuilder = TestFontUtils.builderForFontFile(sourceFile)
     val headerTable = fontBuilder.getTableBuilder(Tag.head).build.asInstanceOf[FontHeaderTable]
     val writableFontData = WritableFontData.createWritableFontData(headerTable.readFontData())

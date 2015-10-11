@@ -16,12 +16,7 @@
 
 package me.priyesh.litho
 
-import java.io.File
-
-import me.priyesh.litho.Strings._
-import me.priyesh.litho.core.FontLoader._
-import me.priyesh.litho.core.{FontStyle, Verifier, Packager}
-import me.priyesh.litho.core.Verifier._
+import me.priyesh.litho.core.{Packager, Verifier}
 
 object Main {
 
@@ -34,13 +29,12 @@ object Main {
     else {
       args(0) match {
         case "verify" => runIfFolderDefined(verify)
-        case "package" => runIfFolderDefined(buildPackage)
         case "fix" => runIfFolderDefined(fix)
+        case "package" => runIfFolderDefined(buildPackage)
         case default => println(s"'$default' is not a valid Litho command")
       }
     }
   }
-
 
   private def showSplash(): Unit = {
     import Config._
@@ -48,44 +42,19 @@ object Main {
     println(s"Version $Version || By $Author")
   }
 
+  private def verify(folderName: String): Unit = {
+    println("Verifying...")
+    Verifier.verify(folderName)
+  }
+
   private def fix(folderName: String): Unit = {
-    println("Fixing")
-
-    val files = filesFromFolder(folderName)
-
-    if (unrecognizedStyleFound(files)) {
-      println(ErrorUnrecognizedStyle)
-    } else {
-      val filesAndStyles = filesAndStylesFromFolder(folderName)
-      filesAndStyles.foreach((f: (File, FontStyle)) => {
-        val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
-        Verifier.fixMacStyle(f._1, dest, f._2)
-      })
-    }
+    println("Fixing...")
+    Verifier.fix(folderName)
   }
 
   private def buildPackage(folderName: String): Unit = {
-    println("Building package")
+    println("Building package...")
     Packager.buildPackage(folderName)
   }
 
-  private def verify(folderName: String): Unit = {
-    println("Verifying")
-
-    val files = filesFromFolder(folderName)
-
-    if (unrecognizedStyleFound(files)) {
-      println(ErrorUnrecognizedStyle)
-    } else {
-      val filesAndStyles = filesAndStylesFromFolder(folderName)
-      val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
-
-      if (invalidFonts.nonEmpty) {
-        println(s"${invalidFonts.size} styles are invalid:")
-        invalidFonts.foreach(p => println(s"${p._2.name}"))
-      } else {
-        println("All fonts were valid")
-      }
-    }
-  }
 }
