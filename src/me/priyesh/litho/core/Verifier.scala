@@ -39,7 +39,7 @@ object Verifier {
       val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
 
       if (invalidFonts.nonEmpty) {
-        println(s"${invalidFonts.size} styles are invalid:")
+        println((if (invalidFonts.size == 1) "1 style is" else s"${invalidFonts.size} styles are") + " invalid:")
         invalidFonts.foreach(p => println(s"${p._2.name}"))
       } else {
         println(AllFontsValid)
