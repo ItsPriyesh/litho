@@ -59,7 +59,6 @@ object Packager {
       stylesToGenerate.foreach(style => {
         copyFile(stylesToFiles.get(getFallbackStyle(style, providedStyles)).get, createDestinationFile(style.name))
       })
-
     } else {
       println(ErrorNotEnoughStylesProvided)
     }

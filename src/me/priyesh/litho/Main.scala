@@ -27,6 +27,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     if (args.isEmpty) showSplash()
+    else if (args.length > 3) println("Too many arguments")
     else {
       args(0) match {
         case "verify" => verify(args(1))
