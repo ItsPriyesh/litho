@@ -56,10 +56,7 @@ object Verifier {
       println(ErrorUnrecognizedStyle)
     } else {
       val filesAndStyles = filesAndStylesFromFolder(folderName)
-      filesAndStyles.foreach((f: (File, FontStyle)) => {
-        val dest = new File(f._1.getParentFile.getPath + "Generated/" + f._1.getName)
-        Verifier.fixMacStyle(f._1, dest, f._2)
-      })
+      filesAndStyles.foreach(fixMacStyle _ tupled)
       println(FontFixingComplete)
     }
   }
@@ -72,8 +69,8 @@ object Verifier {
     allNeededFlags && noExtraFlags
   }
 
-  private def fixMacStyle(sourceFile: File, destFile: File, style: FontStyle): File = {
-    val fontBuilder = TestFontUtils.builderForFontFile(sourceFile)
+  private def fixMacStyle(file: File, style: FontStyle): File = {
+    val fontBuilder = TestFontUtils.builderForFontFile(file)
     val headerTable = fontBuilder.getTableBuilder(Tag.head).build.asInstanceOf[FontHeaderTable]
     val writableFontData = WritableFontData.createWritableFontData(headerTable.readFontData())
 
@@ -82,11 +79,11 @@ object Verifier {
 
     val fixedHeaderTable = headerTableBuilder.build()
 
-    val fixedFontBuilder = TestFontUtils.builderForFontFile(sourceFile)
+    val fixedFontBuilder = TestFontUtils.builderForFontFile(file)
     fixedFontBuilder.newTableBuilder(Tag.head, fixedHeaderTable.readFontData())
 
     val fixedFont = fixedFontBuilder.build()
-    TestFontUtils.serializeFont(fixedFont, destFile)
+    TestFontUtils.serializeFont(fixedFont, file)
   }
 
   private def getRequiredFlags(style: FontStyle): Set[Int] = {

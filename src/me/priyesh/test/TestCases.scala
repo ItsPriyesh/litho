@@ -17,10 +17,10 @@
 package me.priyesh.test
 
 import java.io.File
-import java.nio.file.Files
+import java.nio.file.{Files, StandardCopyOption}
 
 import me.priyesh.litho.Main
-import me.priyesh.litho.core.{Verifier, FontLoader, FontStyle}
+import me.priyesh.litho.core.{FontLoader, FontStyle, Verifier}
 import me.priyesh.test.TestRunner.TestFunction
 
 object TestCases {
@@ -31,12 +31,21 @@ object TestCases {
   /* One of these fonts has an incorrect macstyle (Roboto-Italic.ttf) */
   private val InvalidFonts = "testResources/Aleo_borked"
 
-  private def deleteGeneratedFolder(name: String): Unit = {
-    val folder = new File(s"${name}Generated")
+  private def deleteFolder(name: String): Unit = {
+    val folder = new File(name)
     if (folder.exists) {
       folder.listFiles().map(_.toPath).foreach(Files.delete)
       Files.delete(folder.toPath)
     }
+  }
+
+  private def copyFolder(original: String, copy: String): Unit = {
+    val copyFolder = new File(copy)
+    copyFolder.mkdirs()
+    FontLoader.filesFromFolder(original).foreach(original => {
+      val copy = new File(copyFolder.getPath + "/" + original.getName)
+      Files.copy(original.toPath, copy.toPath, StandardCopyOption.REPLACE_EXISTING)
+    })
   }
 
   def test_packaging_from_basic_styles() = {
@@ -49,13 +58,13 @@ object TestCases {
         FontStyle.AllStyles.forall(fileExists)
       },
       after = () => {
-        deleteGeneratedFolder(folderName)
+        deleteFolder(folderName + "Generated")
       })
   }
 
   def test_verifying_invalid_fonts() = {
     val folderName = InvalidFonts
-    TestFunction("Testing attempt to verify fonts with invalid macstyles",
+    TestFunction("Testing attempt to verify fonts with invalid macStyles",
       test = () => {
         val args = Array("verify", folderName)
         Main.main(args)
@@ -67,7 +76,7 @@ object TestCases {
 
   def test_packaging_invalid_fonts() = {
     val folderName = InvalidFonts
-    TestFunction("Testing attempt to package fonts with invalid macstyles",
+    TestFunction("Testing attempt to package fonts with invalid macStyles",
       test = () => {
         val args = Array("package", folderName)
         Main.main(args)
@@ -80,18 +89,20 @@ object TestCases {
   def test_fixing_invalid_fonts() = {
     import Verifier._
     val folderName = InvalidFonts
-    TestFunction("Testing fixing fonts with invalid macstyles",
+    val tempFolderName = InvalidFonts + "_temp"
+    copyFolder(folderName, tempFolderName)
+    TestFunction("Testing fixing fonts with invalid macStyles",
       test = () => {
-        val args1 = Array("verify", folderName)
+        val args1 = Array("verify", tempFolderName)
         Main.main(args1)
 
-        val args2 = Array("fix", folderName)
+        val args2 = Array("fix", tempFolderName)
         Main.main(args2)
 
-        FontLoader.filesAndStylesFromFolder(InvalidFonts + "Generated").forall(fontIsValid _ tupled)
+        FontLoader.filesAndStylesFromFolder(tempFolderName).forall(fontIsValid _ tupled)
       },
       after = () => {
-        deleteGeneratedFolder(InvalidFonts)
+        deleteFolder(tempFolderName)
       }
     )
   }
