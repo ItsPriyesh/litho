@@ -2,7 +2,9 @@ Litho
 =====
 A tool for creating, verifying and fixing font packages used by [Fontster][1].
 
-Fontster works by replacing the [twelve font styles][2] used by the system. In the context of the app, these twelve styles can be referred to as a font pack. Building font packs isn't always as simple as gathering and renaming TrueType fonts. Each style must have the correct `macStyle`. This is a property defined in the [header table][3] of the file which specifies whether the font is regular, italic, bold, or a combination of the three. Adding a font to the Android system with an incorrect `macStyle` will cause the device to bootloop, resulting in angry users. Litho prevents this from happening by verifying that fonts have correctly assigned `macStyles`, and fixing the property in the case that it has been set incorrectly.
+Fontster works by replacing the [twelve font styles][2] used by the system. In the context of the app, these twelve styles can be referred to as a font pack. Building font packs isn't always as simple as gathering and renaming TrueType fonts. Each style must have the correct `macStyle`. This is a property defined in the [header table][3] of the file which specifies whether the font is regular, italic, bold, or a combination of the three. 
+
+Adding a font to the Android system with an incorrect `macStyle` will cause the device to bootloop, resulting in angry users. Litho prevents this from happening by verifying that fonts have correctly assigned `macStyles`, and fixing the property in the case that it has been set incorrectly.
 
 Usage
 -----
