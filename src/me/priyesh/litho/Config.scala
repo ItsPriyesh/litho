@@ -23,6 +23,5 @@ object Config {
 
   val Version = 1.0
   val Author = "Priyesh Patel"
-  val Debug = false
   
 }
