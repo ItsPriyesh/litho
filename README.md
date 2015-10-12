@@ -6,6 +6,10 @@ Fontster works by replacing the [twelve font styles][2] used by the system. In t
 
 Adding a font to the Android system with an incorrect `macStyle` will cause the device to bootloop, resulting in angry users. Litho prevents this from happening by verifying that fonts have correctly assigned `macStyles`, and fixing the property in the case that it has been set incorrectly.
 
+Download
+--------
+Visit the [releases page][5] and download the latest version.
+
 Usage
 -----
 * Place your fonts in a folder with a suitable name.
@@ -14,13 +18,13 @@ Usage
 Example usage for a folder named `Helvetica`:
 ```bash
 # Checks that each font has been assigned the correct macStyle
-litho verify Helvetica
+./litho verify Helvetica
 
 # Assigns the correct macStyle to each font
-litho fix Helvetica
+./litho fix Helvetica
 
 # Generates missing styles to build a full font package
-litho package Helvetica
+./litho package Helvetica
 ``` 
 This will create a folder named `HelveticaFontPack` containing all twelve verified styles.
 
@@ -45,3 +49,4 @@ License
 [2]: https://github.com/ItsPriyesh/Litho/blob/master/src/me/priyesh/litho/core/FontStyle.scala#L37-L44
 [3]: https://www.microsoft.com/typography/otspec/head.htm
 [4]: https://github.com/ItsPriyesh/Litho/blob/master/src/me/priyesh/litho/core/FontStyle.scala#L62-L75
+[5]: https://github.com/ItsPriyesh/Litho/releases
