@@ -58,7 +58,8 @@ object TestCases {
       },
       after = () => {
         deleteFolder(folderName + "FontPack")
-      })
+      }
+    )
   }
 
   def test_verifying_invalid_fonts() = {
@@ -81,6 +82,9 @@ object TestCases {
         Main.main(args)
 
         FontLoader.filesAndStylesFromFolder(folderName).exists(f => !Verifier.fontIsValid(f._1, f._2))
+      },
+      after = () => {
+        deleteFolder(folderName + "FontPack")
       }
     )
   }
