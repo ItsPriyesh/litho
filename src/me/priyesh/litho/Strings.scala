@@ -21,7 +21,7 @@ object Strings {
   val ErrorInvalidFileCount = "Folder contains invalid number of fonts."
   val ErrorBasicsMissing = "Litho was unable to locate all basic files."
   val ErrorEnsureBasicsExist = "Ensure that you include the following styles: Regular, Italic, Bold, BoldItalic."
-  val ErrorInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned."
+  val WarningInvalidMacStyles = "Some fonts were found to have incorrect macstyles assigned.\nConsider using verify and fix."
   val ErrorFolderUnspecified = "A folder must be specified"
   val ErrorTooManyArgs = "Too many arguments"
   val ErrorCantFindFolder = "Litho could not find the specified folder."

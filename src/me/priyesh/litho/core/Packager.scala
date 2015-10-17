@@ -29,12 +29,11 @@ object Packager {
       println(ErrorCantFindFolder)
     } else {
       val filesAndStyles = FontLoader.filesAndStylesFromFolder(folderName)
-      if (filesAndStyles.forall(Verifier.fontIsValid _ tupled)) {
-        packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
-        println(PackageWasCreated)
-      } else {
-        println(ErrorInvalidMacStyles)
+      if (filesAndStyles.exists(f => !Verifier.fontIsValid(f._1, f._2))) {
+        println(WarningInvalidMacStyles)
       }
+      packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
+      println(PackageWasCreated)
     }
   }
 
