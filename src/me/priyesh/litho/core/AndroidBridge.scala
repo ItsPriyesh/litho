@@ -22,10 +22,7 @@ import scala.sys.process._
 
 object AndroidBridge {
 
-  private def pushToSd(folderName: String): Boolean = {
-    val pushCommand = s"adb push $folderName /sdcard/Litho/"
-    pushCommand.! == 0
-  }
+  private def pushToSd(source: String): Boolean = s"adb push $source /sdcard/Litho/".! == 0
 
   private def copyFontsToSystemAndReboot(): Unit = {
     var callback: () => Unit = null
@@ -51,6 +48,7 @@ object AndroidBridge {
   def connectedDevices(): String = "adb devices".!!
 
   def install(deviceId: String, folderName: String): Unit = {
+    pushToSd("./executable/RobotoFlashable.zip")
     if (pushToSd(folderName)) copyFontsToSystemAndReboot()
     println("Installation complete!")
   }
