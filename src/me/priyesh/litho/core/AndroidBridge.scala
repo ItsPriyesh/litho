@@ -19,6 +19,7 @@ package me.priyesh.litho.core
 import java.io.OutputStreamWriter
 
 import scala.sys.process._
+
 object AndroidBridge {
 
   private def pushToSd(folderName: String): Boolean = {
@@ -26,20 +27,32 @@ object AndroidBridge {
     pushCommand.! == 0
   }
 
-  private def copyFontsToSystemAndReboot(): Boolean = {
-    val io = BasicIO.standard { outStream =>
+  private def copyFontsToSystemAndReboot(): Unit = {
+    var callback: () => Unit = null
+    val process = "adb shell".run(BasicIO.standard { outStream =>
       val buffered = new OutputStreamWriter(outStream)
       buffered.write("su\n")
+      buffered.write("mount -o rw,remount /system\n")
       buffered.write("cp /sdcard/Litho/*.ttf /system/fonts/\n")
       buffered.write("exit\n")
+      Thread.sleep(8000)
       buffered.close()
-    }
+      callback()
+    })
+    callback = () => { process.destroy() }
 
-    ("adb shell".run(io).exitValue() == 0) && ("adb reboot".! == 0)
+    (3 to 1 by -1).foreach(n => {
+      Thread.sleep(1000)
+      println(s"Rebooting in $n seconds")
+    })
+    "adb reboot".!
   }
+
+  def connectedDevices(): String = "adb devices".!!
 
   def install(deviceId: String, folderName: String): Unit = {
     if (pushToSd(folderName)) copyFontsToSystemAndReboot()
+    println("Installation complete!")
   }
 
 }

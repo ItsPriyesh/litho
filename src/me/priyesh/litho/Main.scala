@@ -59,6 +59,7 @@ object Main {
   }
 
   private def install(folderName: String): Unit = {
+    println(AndroidBridge.connectedDevices())
     print("Enter device id: ")
     val deviceId = readLine()
     println(Installing)
