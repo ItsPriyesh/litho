@@ -31,6 +31,7 @@ object Strings {
   val Verifying = "Verifying..."
   val Packaging = "Packaging..."
   val Fixing = "Fixing..."
+  val Installing = "Installing..."
 
   val PackageWasCreated = "Package was created"
   val FontFixingComplete = "All fonts with invalid macStyles have been fixed"

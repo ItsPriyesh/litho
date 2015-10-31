@@ -109,4 +109,18 @@ object TestCases {
       }
     )
   }
+
+  def test_install() = {
+    val folderName = ValidFonts
+    TestFunction("Testing font installation on Android device",
+      test = () => {
+        Main.main(Array("package", folderName))
+        Main.main(Array("install", folderName + "FontPack"))
+        true
+      },
+      after = () => {
+        deleteFolder(folderName + "FontPack")
+      }
+    )
+  }
 }

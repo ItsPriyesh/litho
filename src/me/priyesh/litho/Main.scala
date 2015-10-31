@@ -16,16 +16,17 @@
 
 package me.priyesh.litho
 
-import me.priyesh.litho.core.{Packager, Verifier}
-import Strings._
+import me.priyesh.litho.Strings._
+import me.priyesh.litho.core.{AndroidBridge, Packager, Verifier}
 
 object Main {
 
-  private object Commands {
-    val Verify = "verify"
-    val Fix = "fix"
-    val Package = "package"
-  }
+  private val CommandMapping = Map(
+    "verify" -> verify _,
+    "fix" -> fix _,
+    "package" -> buildPackage _,
+    "install" -> install _
+  )
 
   def main(args: Array[String]): Unit = {
     def runIfFolderDefined(fun: (String) => Unit): Unit =
@@ -33,15 +34,7 @@ object Main {
 
     if (args.isEmpty) showSplash()
     else if (args.length > 3) println(ErrorTooManyArgs)
-    else {
-      import Commands._
-      args(0) match {
-        case Verify => runIfFolderDefined(verify)
-        case Fix => runIfFolderDefined(fix)
-        case Package => runIfFolderDefined(buildPackage)
-        case default => println(s"'$default' is not a valid Litho command")
-      }
-    }
+    else CommandMapping.get(args(0)).fold(println(s"${args(0)} is not a valid Litho command"))(runIfFolderDefined)
   }
 
   private def showSplash(): Unit = {
@@ -65,4 +58,10 @@ object Main {
     Packager.buildPackage(folderName)
   }
 
+  private def install(folderName: String): Unit = {
+    print("Enter device id: ")
+    val deviceId = readLine()
+    println(Installing)
+    AndroidBridge.install(deviceId, folderName)
+  }
 }
