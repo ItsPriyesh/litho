@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package me.priyesh.litho.core
+package me.priyesh.litho
+package core
 
-import java.io.OutputStreamWriter
+import java.io.{OutputStream, OutputStreamWriter}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Promise
 import scala.sys.process._
 
 object AndroidBridge {
 
-  private def pushToSd(source: String): Boolean = s"adb push $source /sdcard/Litho/".! == 0
+  private def pushToSd(source: String): CanFail = if (s"adb push $source /sdcard/Litho/".! == 0) Succeeded else Failed
 
   private def copyFontsToSystemAndReboot(): Unit = {
-    var callback: () => Unit = null
-    val process = "adb shell".run(BasicIO.standard { outStream =>
-      val buffered = new OutputStreamWriter(outStream)
+    val inputStreamPromise = Promise[OutputStream]()
+    def writeCommands(inputStream: OutputStream): Unit = {
+      val buffered = new OutputStreamWriter(inputStream)
       buffered.write("su\n")
       buffered.write("mount -o rw,remount /system\n")
       buffered.write("cp /sdcard/Litho/*.ttf /system/fonts/\n")
       buffered.write("exit\n")
-      Thread.sleep(8000)
+      buffered.write("exit\n")
       buffered.close()
-      callback()
-    })
-    callback = () => { process.destroy() }
-
-    (3 to 1 by -1).foreach(n => {
+    }
+    val process = "adb shell".run(new ProcessIO({ inputStream =>
+      inputStreamPromise.success(inputStream)
+    }, { outputStream =>
+      print(outputStream.read())
+      inputStreamPromise.future.foreach(writeCommands)
+      BasicIO.toStdOut(outputStream)
+    }, { _ => }))
+    println("Process finished")
+    (5 to 1 by -1).foreach(n => {
       Thread.sleep(1000)
       println(s"Rebooting in $n seconds")
     })
@@ -47,10 +55,11 @@ object AndroidBridge {
 
   def connectedDevices(): String = "adb devices".!!
 
-  def install(deviceId: String, folderName: String): Unit = {
-    pushToSd("./executable/RobotoFlashable.zip")
-    if (pushToSd(folderName)) copyFontsToSystemAndReboot()
-    println("Installation complete!")
+  def install(deviceId: String, folderName: String): CanFail = {
+    pushToSd("./RobotoFlashable.zip") then pushToSd(folderName) foreach {
+      copyFontsToSystemAndReboot()
+      println("Installation complete!")
+    }
   }
 
 }

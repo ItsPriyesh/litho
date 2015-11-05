@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package me.priyesh.litho.core
+package me.priyesh.litho
+package core
 
 import java.io.File
 
@@ -27,13 +28,15 @@ import me.priyesh.litho.core.FontLoader._
 
 object Verifier {
 
-  def verify(folderName: String): Unit = {
+  def verify(folderName: String): CanFail = {
     val files = filesFromFolder(folderName)
 
     if (!FontLoader.folderExists(folderName)) {
       println(ErrorCantFindFolder)
+      failed
     } else if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
+      failed
     } else {
       val filesAndStyles = filesAndStylesFromFolder(folderName)
       val invalidFonts = filesAndStyles filter { case (file, style) => !fontIsValid(file, style) }
@@ -41,23 +44,28 @@ object Verifier {
       if (invalidFonts.nonEmpty) {
         println((if (invalidFonts.size == 1) "1 style is" else s"${invalidFonts.size} styles are") + " invalid:")
         invalidFonts.foreach(p => println(s"${p._2.name}"))
+        failed
       } else {
         println(AllFontsValid)
+        succeeded
       }
     }
   }
 
-  def fix(folderName: String): Unit = {
+  def fix(folderName: String): CanFail = {
     val files = filesFromFolder(folderName)
 
     if (!FontLoader.folderExists(folderName)) {
       println(ErrorCantFindFolder)
+      failed
     } else if (unrecognizedStyleFound(files)) {
       println(ErrorUnrecognizedStyle)
+      failed
     } else {
       val filesAndStyles = filesAndStylesFromFolder(folderName)
       filesAndStyles.foreach(fixMacStyle _ tupled)
       println(FontFixingComplete)
+      succeeded
     }
   }
 

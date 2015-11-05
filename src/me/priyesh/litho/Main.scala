@@ -21,20 +21,21 @@ import me.priyesh.litho.core.{AndroidBridge, Packager, Verifier}
 
 object Main {
 
-  private val CommandMapping = Map(
+  private val commandMapping: Map[String, (String) => CanFail] = Map(
     "verify" -> verify _,
     "fix" -> fix _,
     "package" -> buildPackage _,
-    "install" -> install _
+    "install" -> install _,
+    "all" -> doEverything _
   )
 
   def main(args: Array[String]): Unit = {
-    def runIfFolderDefined(fun: (String) => Unit): Unit =
+    def runIfFolderDefined(fun: (String) => CanFail): Unit =
       if (args isDefinedAt 1) fun(args(1)) else println(ErrorFolderUnspecified)
 
     if (args.isEmpty) showSplash()
     else if (args.length > 3) println(ErrorTooManyArgs)
-    else CommandMapping.get(args(0)).fold(println(s"${args(0)} is not a valid Litho command"))(runIfFolderDefined)
+    else commandMapping.get(args(0)).fold(println(s"${args(0)} is not a valid Litho command"))(runIfFolderDefined)
   }
 
   private def showSplash(): Unit = {
@@ -43,26 +44,29 @@ object Main {
     println(s"Version $Version || By $Author")
   }
 
-  private def verify(folderName: String): Unit = {
+  private def verify(folderName: String): CanFail = {
     println(Verifying)
     Verifier.verify(folderName)
   }
 
-  private def fix(folderName: String): Unit = {
+  private def fix(folderName: String): CanFail = {
     println(Fixing)
     Verifier.fix(folderName)
   }
 
-  private def buildPackage(folderName: String): Unit = {
+  private def buildPackage(folderName: String): CanFail = {
     println(Packaging)
     Packager.buildPackage(folderName)
   }
 
-  private def install(folderName: String): Unit = {
+  private def install(folderName: String): CanFail = {
     println(AndroidBridge.connectedDevices())
     print("Enter device id: ")
     val deviceId = readLine()
     println(Installing)
     AndroidBridge.install(deviceId, folderName)
   }
+
+  private def doEverything(folderName: String): CanFail =
+    verify(folderName) then buildPackage(folderName) then install(folderName + "FontPack")
 }

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package me.priyesh.litho.core
+package me.priyesh.litho
+package core
 
 import java.io.File
 import java.nio.file._
@@ -24,22 +25,26 @@ import me.priyesh.litho.core.FontStyle._
 
 object Packager {
 
-  def buildPackage(folderName: String): Unit = {
+  def buildPackage(folderName: String): CanFail = {
     if (!FontLoader.folderExists(folderName)) {
       println(ErrorCantFindFolder)
+      failed
     } else {
       val filesAndStyles = FontLoader.filesAndStylesFromFolder(folderName)
       if (filesAndStyles.exists(f => !Verifier.fontIsValid(f._1, f._2))) {
         println(WarningInvalidMacStyles)
+        failed
+      } else {
+        packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
+        println(PackageWasCreated)
+        succeeded
       }
-      packageFonts(folderName, filesAndStyles.map(_.swap).toMap)
-      println(PackageWasCreated)
     }
   }
 
   private def enoughStylesProvided(styles: Set[FontStyle]): Boolean = BasicStyles subsetOf styles
 
-  private def packageFonts(folderName: String, stylesToFiles: Map[FontStyle, File]): Unit = {
+  private def packageFonts(folderName: String, stylesToFiles: Map[FontStyle, File]): CanFail = {
     val packagedFolder = new File(s"./${folderName}FontPack/")
     packagedFolder.mkdirs()
 
@@ -56,17 +61,19 @@ object Packager {
       stylesToGenerate.foreach(style => {
         copyFile(stylesToFiles.get(getFallbackStyle(style, providedStyles)).get, createDestinationFile(style.name))
       })
+      succeeded
     } else {
       println(ErrorNotEnoughStylesProvided)
+      failed
     }
   }
 
   private def getFallbackStyle(style: FontStyle, providedStyles: Set[FontStyle]): FontStyle =
     StyleFallbackMap.get(style).get.find(providedStyles.contains).get
 
-  private def copyFile(source: File, dest: File): Unit = {
+  private def copyFile(source: File, dest: File): CanFail = {
     def fileToPath(file: File): Path = Paths.get(file.toURI)
-    Files.copy(fileToPath(source), fileToPath(dest), StandardCopyOption.REPLACE_EXISTING)
+    CanFail(Files.copy(fileToPath(source), fileToPath(dest), StandardCopyOption.REPLACE_EXISTING))
   }
 
 }
