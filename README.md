@@ -28,6 +28,12 @@ Example usage for a folder named `Helvetica`:
 ``` 
 This will create a folder named `HelveticaFontPack` containing all twelve verified styles.
 
+Litho also provides the ability to install generated font packages onto a device. This is done via ADB which allows for compatibility with physical devices and emulators (assuming they are rooted).
+```bash
+# Installs Helvetica onto a connected device
+./litho install HelveticaFontPack
+```
+
 License
 --------
 
