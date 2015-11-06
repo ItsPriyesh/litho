@@ -27,7 +27,7 @@ object AndroidBridge {
 
   private def pushToSd(source: String): CanFail = if (s"adb push $source /sdcard/Litho/".! == 0) Succeeded else Failed
 
-  private def copyFontsToSystemAndReboot(): Unit = {
+  private def copyFontsToSystemAndReboot(deviceId: String): Unit = {
     val inputStreamPromise = Promise[OutputStream]()
     def writeCommands(inputStream: OutputStream): Unit = {
       val buffered = new OutputStreamWriter(inputStream)
@@ -38,7 +38,8 @@ object AndroidBridge {
       buffered.write("exit\n")
       buffered.close()
     }
-    val process = "adb shell".run(new ProcessIO({ inputStream =>
+
+    s"adb shell -s $deviceId".run(new ProcessIO({ inputStream =>
       inputStreamPromise.success(inputStream)
     }, { outputStream =>
       print(outputStream.read())
@@ -57,7 +58,7 @@ object AndroidBridge {
 
   def install(deviceId: String, folderName: String): CanFail = {
     pushToSd("./RobotoFlashable.zip") then pushToSd(folderName) foreach {
-      copyFontsToSystemAndReboot()
+      copyFontsToSystemAndReboot(deviceId)
       println("Installation complete!")
     }
   }
